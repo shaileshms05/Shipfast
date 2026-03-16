@@ -1,0 +1,71 @@
+# ShipFast v3.0 - Docker Compose for Production Deployment
+version: '3.8'
+
+services:
+  # ShipFast Backend + Frontend
+  shipfast:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shipfast-app
+    ports:
+      - "8000:8000"
+    environment:
+      # Cerebras API Configuration
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
+      
+      # Server Configuration
+      - PORT=8000
+      - HOST=0.0.0.0
+      - ENVIRONMENT=production
+      
+      # Logging
+      - LOG_LEVEL=info
+      
+    volumes:
+      # Persist output files
+      - ./shipfast_output:/app/shipfast_v3/shipfast_output
+      # Persist logs
+      - ./logs:/app/shipfast_v3/logs
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    networks:
+      - shipfast-network
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Nginx Reverse Proxy (Optional - for production SSL/load balancing)
+  nginx:
+    image: nginx:alpine
+    container_name: shipfast-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro  # SSL certificates
+    depends_on:
+      - shipfast
+    restart: unless-stopped
+    networks:
+      - shipfast-network
+
+networks:
+  shipfast-network:
+    driver: bridge
+
+volumes:
+  shipfast_output:
+  logs:

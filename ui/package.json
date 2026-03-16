@@ -1,0 +1,29 @@
+{
+  "name": "shipfast-ui",
+  "version": "1.0.0",
+  "description": "Web UI for ShipFast - AI Development Team",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "node server.js",
+    "install-all": "npm install && cd client && npm install"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "ws": "^8.14.2",
+    "dotenv": "^16.3.1",
+    "child_process": "^1.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["shipfast", "ai", "deployment", "ui"],
+  "author": "ShipFast",
+  "license": "MIT"
+}

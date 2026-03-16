@@ -1,0 +1,6 @@
+#!/Users/shailesh/college/Hackathon-Agent/shipfast_v3/venv_shipfast/bin/python3.11
+import sys
+from fastapi.cli import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())
